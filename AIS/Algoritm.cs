@@ -1,60 +1,111 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MathNet.Numerics;
 
-namespace WOA
+namespace DA
 {
-    //Тип параметра а: линейная или квадратичная функция
-    public enum Params
-    {
-        Linear,
-        Quadratic
-    }
-
     //Класс алгоритма
     public class Algoritm
     {
-        public Params param;
-
         //Генератор псевдослучайных чисел
         private Random rand = new Random();
 
-        //Размер популяции волков
+        #region Параметры алгоритма
+        //Размер популяции стрекоз
         public int population;
 
         //Номер выбранной функции
-        public int f;
+        public int F;
 
         //область определения
         public double[,] D;
 
         //Максимальное число итераций
         public int MaxCount { get; set; }
-        
+
+        //разделение стрекоз в стае
+        public double s;
+
+        //выравнивание стрекоз в стае
+        public double a;
+
+        //сплоченность стрекоз в стае
+        public double c;
+
+        //стремление к лучшему решению
+        public double f;
+
+        //уклонение от лучшего решения
+        public double e;
+
+        //память о предыстории
+        public double w;
+
+        //Начальное значение радиуса окрестности
+        public Vector R = new Vector();
         //Текущая итерация
         public int currentIteration = 0;
 
-        //3 наиболее приспособленные особи
-        public Whale best = new Whale();        
-        public Vector A_individual = new Vector();
-        public Vector C_individual = new Vector();
+        public Vector lb;
+        public Vector ub;
+
+        public Vector MaxDelta;
+        #endregion
+
+        //наиболее приспособленные особи
+        public Agent best = new Agent();
+        public Agent worst = new Agent();
         //Массив средней приспособленности
         public List<double> averageFitness = new List<double>();
-
         //Массив лучшей приспособленности
         public List<double> bestFitness = new List<double>();
-        
-        //Параметр а
-        private double a;
-
-        //Параметр логарифмический спирали
-        public double b = 1;
-
-        //Популяция волков
-        public List<Whale> individuals = new List<Whale>();
-
+        //Популяция стрекоз
+        public List<Agent> individuals = new List<Agent>();
+        //Pool
+        public List<Agent> pool = new List<Agent>();
+        //Шаги
+        public List<Vector> steps;
         //Конструктор по умолчанию
         public Algoritm(){}
+        //Старт алгоритма
+        public Agent FastStartAlg(int population, int MaxCount, double[,] D, int F)
+        {
+            this.MaxCount = MaxCount;
+            this.population = population;
+            this.D = D;
+            this.F = F;
+            lb = new Vector(D[0, 0], D[1, 0]);
+            ub = new Vector(D[0, 1], D[1, 1]);
+            MaxDelta = (ub - lb) / 10;
+
+            FormingPopulation();
+            SetZeros();
+
+            for (int k = 0; k < MaxCount; k++)
+            {
+                UpdateParams(k);
+                PopulationOrder();
+                NewPackGeneration();
+                currentIteration++;
+            }
+            return PoolBest();
+        }
+
+        public void UpdateParams(int k)
+        {
+            w = 0.9 - k * ((0.9 - 0.4) / MaxCount);
+
+            double my_c = 0.1 - k * ((0.9 - 0.4) / (0.5 * MaxCount));
+            if (my_c < 0)
+                my_c = 0;
+
+            s = 2 * rand.NextDouble() * my_c;
+            a = 2 * rand.NextDouble() * my_c;
+            c = 2 * rand.NextDouble() * my_c;
+            f = 2 * rand.NextDouble();
+            e = my_c;
+        }
 
         //Начальное формирование популяции
         public void FormingPopulation()
@@ -67,146 +118,155 @@ namespace WOA
                 x = ((Math.Abs(D[0, 0]) + Math.Abs(D[0, 1])) * x - Math.Abs(D[0, 0]));
                 y = ((Math.Abs(D[1, 0]) + Math.Abs(D[1, 1])) * y - Math.Abs(D[1, 0]));
 
-                Whale Whale = new Whale(x, y, function(x, y, f));
-                individuals.Add(Whale);
+                Agent Agent = new Agent(x, y, function(x, y, F));
+                individuals.Add(Agent);
             }
         }
-        public void Selection()
+
+        public void PopulationOrder()
         {
-            individuals = individuals.OrderByDescending(s => s.fitness).ToList();
-            //Выбираем наиболее приспосоленного кита (сделано так, чтобы была передача значений, а не ссылки) 
-            best.coords[0] = individuals[0].coords[0];    best.coords[1] = individuals[0].coords[1];    best.fitness = individuals[0].fitness;
+            individuals = individuals.OrderBy(s => s.fitness).ToList();
+            
+            best = new Agent(individuals[0].coords[0], individuals[0].coords[1], individuals[0].fitness);
+            worst = new Agent(individuals[population - 1].coords[0], individuals[population - 1].coords[1], individuals[population - 1].fitness);
+
+            pool.Add(best);
         }
 
         //Формирование новой стаи
         public void NewPackGeneration()
         {
-            //Выбор функции изменения параметра а
-            if (param == Params.Quadratic)
-                a = 2 * (1 - ((currentIteration * currentIteration) / ((double)MaxCount * MaxCount)));
-            else
-                a = 2 * (1 - currentIteration / (double)(MaxCount));
 
-            Vector l = new Vector();
-            Vector D_individual = new Vector();
-            for (int k = 0; k < population; k++)
+            for (int i = 0; i < population; i++)
             {
-                if (rand.NextDouble() < 0.5f)
+                R = ((ub - lb) / 4) + ((ub - lb) * (i / MaxCount) * 2);
+
+                List<Agent> neighbourhood = new List<Agent>();
+                
+                for (int j = 0; j < population; j++)
                 {
-                    A_individual[0] = 2 * a * rand.NextDouble() - a;
-                    A_individual[1] = 2 * a * rand.NextDouble() - a;
-                    
-                    C_individual[0] = 2 * rand.NextDouble();
-                    C_individual[1] = 2 * rand.NextDouble();
+                    double dist1 = Math.Abs(individuals[i].coords[0] - individuals[j].coords[0]);
+                    double dist2 = Math.Abs(individuals[i].coords[1] - individuals[j].coords[1]);
 
-                    if ((Math.Abs(A_individual[0]) < 1) && (Math.Abs(A_individual[1]) < 1))
-                    {
-                        D_individual = Vector.Norm(Vector.HadamardMultiply(C_individual, best.coords) - individuals[k].coords);
-                        individuals[k].coords = ((best.coords - Vector.HadamardMultiply(D_individual, A_individual)));
-                    }
-                    else
-                    {
-                        Whale WhaleRand = individuals[rand.Next(0, population - 1)];
-                        D_individual = Vector.Norm(Vector.HadamardMultiply(C_individual, WhaleRand.coords) - individuals[k].coords);
-                        individuals[k].coords = ((WhaleRand.coords - Vector.HadamardMultiply(D_individual, A_individual)));
-                    }
+                    if (dist1 < R[0] && dist2 < R[1] && dist1 != 0 && dist2 != 0)
+                        neighbourhood.Add(individuals[j]);
                 }
-                else
+                if (neighbourhood.Count > 2)
                 {
-                    D_individual = Vector.Norm(best.coords - individuals[k].coords);
-                    l[0] = 2 * rand.NextDouble() - 1;
-                    l[1] = 2 * rand.NextDouble() - 1;
+                    //Разделение
+                    Vector S = new Vector(0, 0);
+                    for (int m = 0; m < neighbourhood.Count; m++)
+                        S += -(neighbourhood[m].coords - individuals[i].coords);
 
-                    double tmp1 = Math.Cos(2 * Math.PI * l[0]) * Math.Exp(b * l[0]);
-                    double tmp2 = Math.Cos(2 * Math.PI * l[1]) * Math.Exp(b * l[1]);
+                    //Выравнивание
+                    Vector A = new Vector(0, 0);
+                    for (int m = 0; m < neighbourhood.Count; m++)
+                        A += steps[m];
+                    A /= neighbourhood.Count;
 
-                    individuals[k].coords[0] = D_individual[0] * tmp1 + best.coords[0];
-                    individuals[k].coords[1] = D_individual[1] * tmp2 + best.coords[1];
+                    //Сплоченность
+                    Vector C = new Vector(0, 0);
+                    for (int m = 0; m < neighbourhood.Count; m++)
+                        C += neighbourhood[m].coords - individuals[i].coords;
+                    C /= neighbourhood.Count;
+
+                    Vector F = best.coords - individuals[i].coords;
+                    Vector E = worst.coords + individuals[i].coords;
+
+                    steps[i] = s * S + a * A + c * C + f * F + e * E + w * steps[i];
+
+                    if (steps[i][0] > MaxDelta[0])
+                        steps[i][0] = MaxDelta[0];
+
+                    if (steps[i][0] < -MaxDelta[0])
+                        steps[i][0] = -MaxDelta[0];
+
+                    if (steps[i][1] > MaxDelta[1])
+                        steps[i][1] = MaxDelta[1];
+
+                    if (steps[i][1] < -MaxDelta[1])
+                        steps[i][1] = -MaxDelta[1];
+
+                    individuals[i].coords += steps[i];
+
+                    double x = individuals[i].coords[0];
+                    double y = individuals[i].coords[1];
+
+                    if (x < D[0, 0])
+                        individuals[i].coords[0] = D[0, 0];
+                    if (x > D[0, 1])
+                        individuals[i].coords[0] = D[0, 1];
+                    if (y < D[1, 0])
+                        individuals[i].coords[1] = D[1, 0];
+                    if (y > D[1, 1])
+                        individuals[i].coords[1] = D[1, 1];
                 }
+                else 
+                {
+                    double beta = 1.5f;
+                    double sigma = Math.Pow(SpecialFunctions.Gamma(1+beta)*Math.Sin(Math.PI*beta/2f)/(SpecialFunctions.Gamma((1+beta)/2f)*beta*Math.Pow(2,(beta-1)/2f)), 1/beta);
 
-                double x = individuals[k].coords[0];
-                double y = individuals[k].coords[1];
+                    int dim = 2;
 
-                //Проверка, не вышли ли мы за границы
-                if (x < D[0, 0])
-                    individuals[k].coords[0] = D[0, 0];
-                if (x > D[0, 1])
-                    individuals[k].coords[0] = D[0, 1];
-                if (y < D[1, 0])
-                    individuals[k].coords[1] = D[1, 0];
-                if (y > D[1, 1])
-                    individuals[k].coords[1] = D[1, 1];
-                individuals[k].fitness = function(individuals[k].coords[0], individuals[k].coords[1], f);
+                    Vector Levy = new Vector();
+
+                    Levy.vector[0] = 0.01 * rand.NextDouble() * dim * sigma / Math.Pow(Math.Abs(rand.NextDouble() * dim), 1 / beta);
+                    Levy.vector[1] = 0.01 * rand.NextDouble() * dim * sigma / Math.Pow(Math.Abs(rand.NextDouble() * dim), 1 / beta);
+
+                    individuals[i].coords = individuals[i].coords + Levy * individuals[i].coords;
+
+                    SetZeros();
+                }
+                individuals[i].fitness = function(individuals[i].coords[0], individuals[i].coords[1], F);
             }
         }
 
-        //Старт алгоритма
-        public Whale FastStartAlg(int population, int MaxCount, double b, double[,] D, int f, Params param) 
+        public void SetZeros()
         {
-            this.param = param;
-            this.MaxCount = MaxCount;
-            this.population = population;
-            this.D = D;
-            this.f = f;
-            this.b = b;
-
-            FormingPopulation();
-
-            for (int k = 1; k < MaxCount; k++)
+            steps = new List<Vector>();
+            for (int i = 0; i < population; i++)
             {
-                Selection();
-                NewPackGeneration();
-                currentIteration++;
+                steps.Add(new Vector());
+                steps[i][0] = 0;
+                steps[i][1] = 0;
             }
-            Selection();
-            return best;
         }
+
+        private Agent PoolBest() 
+        {
+            pool = pool.OrderBy(s => s.fitness).ToList();
+            return pool[0];
+        }
+
         
         //Все тестовые функции
-        private float function(double x1, double x2, int f)
+        private float function(double x1, double x2, int F)
         {
             float funct = 0;
-            if (f == 0)
-            {
-                funct = (float)(x1 * Math.Sin(Math.Sqrt(Math.Abs(x1))) + x2 * Math.Sin(Math.Sqrt(Math.Abs(x2))));
-            }
-            else if (f == 1)
-            {
-                funct = (float)(x1 * Math.Sin(4 * Math.PI * x1) - x2 * Math.Sin(4 * Math.PI * x2 + Math.PI) + 1);
-            }
-            else if (f == 2)
+            if (F == 0)
+                funct = -(float)(x1 * Math.Sin(Math.Sqrt(Math.Abs(x1))) + x2 * Math.Sin(Math.Sqrt(Math.Abs(x2))));
+            else if (F == 1)
+                funct = -(float)(x1 * Math.Sin(4 * Math.PI * x1) - x2 * Math.Sin(4 * Math.PI * x2 + Math.PI) + 1);
+            else if (F == 2)
             {
                 double[] c6 = Cpow(x1, x2, 6);
-                funct = (float)(1 / (1 + Math.Sqrt((c6[0] - 1) * (c6[0] - 1) + c6[1] * c6[1])));
+                funct = -(float)(1 / (1 + Math.Sqrt((c6[0] - 1) * (c6[0] - 1) + c6[1] * c6[1])));
             }
-            else if (f == 3)
-            {
-                funct = (float)(0.5 - (Math.Pow(Math.Sin(Math.Sqrt(x1 * x1 + x2 * x2)), 2) - 0.5) / (1 + 0.001 * (x1 * x1 + x2 * x2)));
-            }
-            else if (f == 4)
-            {
-                funct = (float)((-x1 * x1 + 10 * Math.Cos(2 * Math.PI * x1)) + (-x2 * x2 + 10 * Math.Cos(2 * Math.PI * x2)));
-            }
-            else if (f == 5)
-            {
-                funct = (float)(-Math.E + 20 * Math.Exp(-0.2 * Math.Sqrt((x1 * x1 + x2 * x2) / 2)) + Math.Exp((Math.Cos(2 * Math.PI * x1) + Math.Cos(2 * Math.PI * x2)) / 2));
-            }
-            else if (f == 6)
-            {
-                funct = (float)(Math.Pow(Math.Cos(2 * x1 * x1) - 1.1, 2) + Math.Pow(Math.Sin(0.5 * x1) - 1.2, 2) - Math.Pow(Math.Cos(2 * x2 * x2) - 1.1, 2) + Math.Pow(Math.Sin(0.5 * x2) - 1.2, 2));
-            }
-            else if (f == 7)
-            {
-                funct = (float)(-Math.Sqrt(Math.Abs(Math.Sin(Math.Sin(Math.Sqrt(Math.Abs(Math.Sin(x1 - 1))) + Math.Sqrt(Math.Abs(Math.Sin(x2 + 2))))))) + 1);
-            }
-            else if (f == 8)
-            {
-                funct = (float)(-(1 - x1) * (1 - x1) - 100 * (x2 - x1 * x1) * (x2 - x1 * x1));
-            }
-            else if (f == 9)
-            {
-                funct = (float)(-x1 * x1 - x2 * x2);
-            }
+            else if (F == 3)
+                funct = -(float)(0.5 - (Math.Pow(Math.Sin(Math.Sqrt(x1 * x1 + x2 * x2)), 2) - 0.5) / (1 + 0.001 * (x1 * x1 + x2 * x2)));
+            else if (F == 4)
+                funct = -(float)((-x1 * x1 + 10 * Math.Cos(2 * Math.PI * x1)) + (-x2 * x2 + 10 * Math.Cos(2 * Math.PI * x2)));
+            else if (F == 5)
+                funct = -(float)(-Math.E + 20 * Math.Exp(-0.2 * Math.Sqrt((x1 * x1 + x2 * x2) / 2)) + Math.Exp((Math.Cos(2 * Math.PI * x1) + Math.Cos(2 * Math.PI * x2)) / 2));
+            else if (F == 6)
+                funct = -(float)(Math.Pow(Math.Cos(2 * x1 * x1) - 1.1, 2) + Math.Pow(Math.Sin(0.5 * x1) - 1.2, 2) - Math.Pow(Math.Cos(2 * x2 * x2) - 1.1, 2) + Math.Pow(Math.Sin(0.5 * x2) - 1.2, 2));
+            else if (F == 7)
+                funct = -(float)(-Math.Sqrt(Math.Abs(Math.Sin(Math.Sin(Math.Sqrt(Math.Abs(Math.Sin(x1 - 1))) + Math.Sqrt(Math.Abs(Math.Sin(x2 + 2))))))) + 1);
+            else if (F == 8)
+                funct = -(float)(-(1 - x1) * (1 - x1) - 100 * (x2 - x1 * x1) * (x2 - x1 * x1));
+            else if (F == 9)
+                funct = -(float)(-x1 * x1 - x2 * x2);
+
             return funct;
         }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace WOA
+namespace DA
 {
     public partial class FormStepByStep : Form
     {
@@ -152,11 +152,14 @@ namespace WOA
                     f = z,
                     D = obl
                 };
-                algst.b = b;
+                algst.lb = new Vector(algst.D[0, 0], algst.D[1, 0]);
+                algst.ub = new Vector(algst.D[0, 1], algst.D[1, 1]);
+                algst.MaxDelta = (algst.ub - algst.lb) / 10;
 
                 algst.FormingPopulation();
+                algst.SetZeros();
 
-                algst.currentIteration = 1;                        // Счетчик итераций
+                algst.currentIteration = 0;                        // Счетчик итераций
                 dataGridViewIterationInfo.Rows[0].Cells[1].Value = algst.currentIteration;
                 dataGridViewIterationInfo.Rows[1].Cells[1].Value = algst.population;
                 dataGridViewIterationInfo.Rows[2].Cells[1].Value = algst.MaxCount;
@@ -287,10 +290,10 @@ namespace WOA
                     e.Graphics.FillEllipse(Brushes.Red, (float)((algst.individuals[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.individuals[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 8, 8);
             }
 
-            if((Red[1] == true)||(Red[2] == true)||(Red[3] == true))
-            {
-                e.Graphics.DrawEllipse(p14, (float)((algst.individuals[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 2) - 7, (float)(h - (algst.individuals[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 2) - 7, 20, 20);
-            }
+            //if((Red[1] == true)||(Red[2] == true)||(Red[3] == true))
+            //{
+            //    e.Graphics.DrawEllipse(p14, (float)((algst.individuals[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 2) - 7, (float)(h - (algst.individuals[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 2) - 7, 20, 20);
+            //}
 
             for (int i = -6; i < 12; i++)
             {
@@ -403,9 +406,10 @@ namespace WOA
                     Red[0] = false;
                     Red[1] = true;
                 }
-                    
-                //селекция
-                algst.Selection();
+
+                algst.UpdateParams(algst.currentIteration);
+                algst.PopulationOrder();
+
                 algst.bestFitness.Add(algst.best.fitness);
                 algst.AverageFitness();
                 UpdateIterationInfo();
@@ -461,7 +465,7 @@ namespace WOA
             if (Red[4] == true)
             {
                 Red[3] = false;
-                algst.Selection();
+               // algst.Selection();
 
                 UpdateAnswer();
                 UpdateIterationInfo();
@@ -479,7 +483,7 @@ namespace WOA
             {
                 if (algst.currentIteration < algst.MaxCount)
                 {
-                    algst.Selection();
+                //    algst.Selection();
                     algst.NewPackGeneration();
 
                     algst.AverageFitness();
@@ -507,6 +511,7 @@ namespace WOA
                 Pen p1 = new Pen(Color.Black, 1);
                 Pen p2 = new Pen(Color.Green, 2);
                 Pen p3 = new Pen(Color.Blue, 2);
+                Pen p4 = new Pen(Color.Red, 2);
                 Font f1 = new Font("TimesNewRoman", 7);
                 Font f2 = new Font("TimesNewRoman", 7, FontStyle.Bold);
                 float x0 = 25;
@@ -606,7 +611,7 @@ namespace WOA
                 Red[3] = false;
                 for (int i = 1; algst.currentIteration < MaxIteration; i++)
                 {
-                    algst.Selection();
+                 //   algst.Selection();
                     algst.NewPackGeneration();
 
                     algst.bestFitness.Add(algst.best.fitness);
@@ -615,7 +620,7 @@ namespace WOA
                     algst.currentIteration++;
                 }
 
-                algst.Selection();
+              //  algst.Selection();
 
                 UpdateAnswer();
                 UpdateIterationInfo();

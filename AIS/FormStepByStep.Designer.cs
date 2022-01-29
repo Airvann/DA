@@ -1,4 +1,4 @@
-﻿namespace WOA
+﻿namespace DA
 {
     partial class FormStepByStep
     {
@@ -71,18 +71,18 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(832, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(430, 16);
+            this.label1.Size = new System.Drawing.Size(429, 16);
             this.label1.TabIndex = 4;
             this.label1.Text = "Графическое изображение популяции и линий уровня функции ";
             // 
             // buttonMove
             // 
             this.buttonMove.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonMove.Location = new System.Drawing.Point(216, 137);
+            this.buttonMove.Location = new System.Drawing.Point(223, 137);
             this.buttonMove.Name = "buttonMove";
             this.buttonMove.Size = new System.Drawing.Size(135, 75);
             this.buttonMove.TabIndex = 10;
-            this.buttonMove.Text = "Найти новые положения китов \r\nв стае";
+            this.buttonMove.Text = "Найти новые положения стрекоз";
             this.buttonMove.UseVisualStyleBackColor = true;
             this.buttonMove.Click += new System.EventHandler(this.buttonMove_Click);
             // 
@@ -93,7 +93,7 @@
             this.buttonBest.Name = "buttonBest";
             this.buttonBest.Size = new System.Drawing.Size(135, 75);
             this.buttonBest.TabIndex = 12;
-            this.buttonBest.Text = "Найти лидера \nв популяции китов";
+            this.buttonBest.Text = "Найти источник пищи и хищника";
             this.buttonBest.UseVisualStyleBackColor = true;
             this.buttonBest.Click += new System.EventHandler(this.buttonBest_Click);
             // 
@@ -122,7 +122,7 @@
             // buttonStart
             // 
             this.buttonStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonStart.Location = new System.Drawing.Point(25, 19);
+            this.buttonStart.Location = new System.Drawing.Point(25, 31);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(135, 75);
             this.buttonStart.TabIndex = 10;
@@ -292,7 +292,7 @@
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label2.Location = new System.Drawing.Point(413, 15);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(398, 32);
+            this.label2.Size = new System.Drawing.Size(397, 32);
             this.label2.TabIndex = 26;
             this.label2.Text = "График изменения средней (зеленый) и наилучшей (синий) \r\nприспособленности популя" +
     "ции:";

@@ -6,14 +6,44 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 
-namespace WOA
+namespace DA
 {
     public partial class FormMain : Form
     {
         private Algoritm alg;
+
+        #region Параметры
         private int population = 0;
         private int MaxIteration = 0;
-        private double b = 0;
+        //разделение стрекоз в стае
+        public double s;
+
+        //выравнивание стрекоз в стае
+        public double a;
+
+        //сплоченность стрекоз в стае
+        public double c;
+
+        //стремление к лучшему решению
+        public double f;
+
+        //уклонение от лучшего решения
+        public double e;
+
+        //память о предыстории
+        public double w;
+
+        //Параметр для реализации полетов Леви
+        public double lambda;
+
+        //шаг для полева Леви
+        public double alpha;
+
+        //Начальное значение радиуса окрестности
+        public double R;
+
+        #endregion
+
         private double[,] obl = new double[2, 2];
         private List<Vector> exactPoints;
 
@@ -28,10 +58,8 @@ namespace WOA
         public FormMain()
         {
             InitializeComponent();
-            comboBoxSelectParams.SelectedIndex = 0;
             InitDataGridView();
 
-            comboBoxSelectParams.SelectedIndexChanged += new EventHandler(comboBox_SelectedIndexChanged);
             comboBox1.SelectedIndexChanged += new EventHandler(comboBox_SelectedIndexChanged);
 
             if (File.Exists("protocol.txt"))
@@ -55,13 +83,11 @@ namespace WOA
             dataGridView1.Rows[0].Cells[0].Value = "x";
             dataGridView1.Rows[1].Cells[0].Value = "y";
 
-            dataGridView2.RowCount = 3;
+            dataGridView2.RowCount = 2;
             dataGridView2.Rows[0].Cells[0].Value = "Размер начальной популяции";
             dataGridView2.Rows[1].Cells[0].Value = "Максимальное количество итераций";
-            dataGridView2.Rows[0].Cells[1].Value = 100;
-            dataGridView2.Rows[1].Cells[1].Value = 100;
-            dataGridView2.Rows[2].Cells[0].Value = "Параметр логарифмической спирали";
-            dataGridView2.Rows[2].Cells[1].Value = 2;
+            dataGridView2.Rows[0].Cells[1].Value = 200;
+            dataGridView2.Rows[1].Cells[1].Value = 200;
 
             dataGridView3.RowCount = 3;
             dataGridView3.Columns[0].DefaultCellStyle.Font = new Font("Times new roman", 12, FontStyle.Italic);
@@ -78,8 +104,6 @@ namespace WOA
                 dataGridView1.Rows[1].Cells[2].Value!= null)   
             {
                 //создать начальную популяцию
-                if ((comboBox1.SelectedIndex != -1) && (comboBoxSelectParams.SelectedIndex != -1))
-                {
                     int z = comboBox1.SelectedIndex;
 
                     obl[0, 0] = Convert.ToDouble(dataGridView1.Rows[0].Cells[1].Value);
@@ -89,17 +113,15 @@ namespace WOA
 
                     population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
                     MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
-                    b = Convert.ToDouble(dataGridView2.Rows[2].Cells[1].Value);
-                    Params param = (comboBoxSelectParams.SelectedIndex == 0) ? Params.Linear : Params.Quadratic;
+
                     alg = new Algoritm();
 
-                    Whale result = alg.FastStartAlg(population, MaxIteration, b, obl, z, param);
+                    Agent result = alg.FastStartAlg(population, MaxIteration, obl, z);
                     dataGridView3.Rows[0].Cells[1].Value = string.Format($"{result.coords[0]:F8}");
                     dataGridView3.Rows[1].Cells[1].Value = string.Format($"{result.coords[1]:F8}");
                     dataGridView3.Rows[2].Cells[1].Value = string.Format($"{result.fitness:F8}");
                     flag2 = true;
                     pictureBox1.Refresh();
-                }
             }
             else
                 MessageBox.Show("Введите корректные параметры", "Ошибка при запуске алгоритма", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -408,10 +430,12 @@ namespace WOA
                         //Отрисовка результата работы алгоритма
                         if (flag2 == true)
                         {
-                            for (int i = 0; i < (int)alg.population; i++)
-                                e.Graphics.FillEllipse(Brushes.Blue, (float)((alg.individuals[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.individuals[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);                            
-                    
-                            e.Graphics.FillEllipse(Brushes.Red, (float)((alg.best.coords.vector[0] * k - x1) * w / (x2 - x1) - 4), (float)(h - (alg.best.coords.vector[1] * k - y1) * h / (y2 - y1) - 4), 8, 8);
+                            for (int i = 0; i < alg.pool.Count; i++)
+                                e.Graphics.FillEllipse(Brushes.Orange, (float)((alg.pool[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.pool[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
+
+                            for (int i = 0; i < alg.individuals.Count; i++)
+                                e.Graphics.FillEllipse(Brushes.Blue, (float)((alg.individuals[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.individuals[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
+                            e.Graphics.FillEllipse(Brushes.Red, (float)((alg.pool[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 4), (float)(h - (alg.pool[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 4), 8, 8);
                         }                        
 
                         //отрисовка Осей
@@ -485,8 +509,6 @@ namespace WOA
         //По шагам
         private void button3_Click(object sender, EventArgs e)
         {
-            if ((comboBox1.SelectedIndex != -1) && (comboBoxSelectParams.SelectedIndex != -1))
-            {
                 obl = new double[2, 2];
 
                 obl[0, 0] = Convert.ToDouble(dataGridView1.Rows[0].Cells[1].Value);
@@ -496,16 +518,14 @@ namespace WOA
 
                 population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
                 MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
-                b = Convert.ToDouble(dataGridView2.Rows[2].Cells[1].Value);
 
-                FormStepByStep form = new FormStepByStep(comboBox1.SelectedIndex, obl, population, MaxIteration, b, exact)
+                FormStepByStep form = new FormStepByStep(comboBox1.SelectedIndex, obl, population, MaxIteration, 0, exact)
                 {
                     flines = flines,
                     showobl = showobl,
                     Ar = Ar
                 };
                 form.Show();
-            }
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -523,22 +543,6 @@ namespace WOA
             }
         }
 
-        private void comboBoxSelectParams_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (comboBoxSelectParams.SelectedIndex)
-            {
-                case 0:
-                    pictureBox4.Image = Properties.Resources.NonSquare;
-                    break;
-                case 1:
-                    pictureBox4.Image = Properties.Resources.Square;
-                    break;
-                default:
-                    break;
-            }
-            pictureBox4.Refresh();
-        }
-
         private void buttonHelp_Click(object sender, EventArgs e)
         {
             Process.Start("HelpFile.pdf");
@@ -551,7 +555,7 @@ namespace WOA
                 dataGridView1.Rows[1].Cells[1].Value != null &&
                 dataGridView1.Rows[1].Cells[2].Value != null)
             {
-                if ((comboBox1.SelectedIndex != -1) && (comboBoxSelectParams.SelectedIndex != -1))
+                if (comboBox1.SelectedIndex != -1)
                 {
                     obl[0, 0] = Convert.ToDouble(dataGridView1.Rows[0].Cells[1].Value);
                     obl[0, 1] = Convert.ToDouble(dataGridView1.Rows[0].Cells[2].Value);
@@ -568,13 +572,11 @@ namespace WOA
 
                     population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
                     MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
-                    b = Convert.ToDouble(dataGridView2.Rows[2].Cells[1].Value);
-                    Params param = (comboBoxSelectParams.SelectedIndex == 0) ? Params.Linear : Params.Quadratic;
 
                     for (int i = 0; i < 100; i++)
                     {
                         alg = new Algoritm();
-                        Whale result = alg.FastStartAlg(population, MaxIteration, b, obl, z, param);
+                        Agent result = alg.FastStartAlg(population, MaxIteration, obl, z);
 
                         foreach (Vector item in exactPoints)
                         {
@@ -605,7 +607,7 @@ namespace WOA
                     FileStream fs = new FileStream("protocol.txt", FileMode.Append, FileAccess.Write);
                     StreamWriter r = new StreamWriter(fs);
                     r.Write(String.Format(@"| {0, 4}          |      {1, 6}      |        {2, 4}         |        {3, 6}              |{4, 22:f6}                 |{5, 20:f6}              |{6, 20:f6}            |{7, 12}         |
-|---------------+------------------+---------------------+----------------------------+---------------------------------------+----------------------------------+--------------------------------+---------------------|", z + 1, population, MaxIteration,b, averDer, minDeviation, normalDerivation, successCount));
+|---------------+------------------+---------------------+----------------------------+---------------------------------------+----------------------------------+--------------------------------+---------------------|", z + 1, population, MaxIteration,0, averDer, minDeviation, normalDerivation, successCount));
                     r.Write("\n");
                     r.Close();
                     fs.Close();
