@@ -7,23 +7,20 @@ namespace DA
 {
     public partial class FormStepByStep : Form
     {
-        public FormStepByStep(int z, double[,] obl, int PopulationCount, int MaxIteration, double b, double exact)
+        public FormStepByStep(int z, double[,] obl, int PopulationCount, int MaxIteration, double exact)
         {
             InitializeComponent();
             InitDataGridView();
-
 
             this.z = z;
             this.obl = obl;
             this.exact = exact;
             this.PopulationCount = PopulationCount;
             this.MaxIteration = MaxIteration;
-            this.b = b;
         }
 
         private int PopulationCount;
         private int MaxIteration;
-        private double b = 0;
         public double exact;
         public Algoritm algst = new Algoritm();
 
@@ -53,8 +50,8 @@ namespace DA
             dataGridViewIterationInfo.Rows[0].Cells[0].Value = "Номер популяции:";
             dataGridViewIterationInfo.Rows[1].Cells[0].Value = "Размер популяции:";
             dataGridViewIterationInfo.Rows[2].Cells[0].Value = "Количество итераций:";
-            dataGridViewIterationInfo.Rows[3].Cells[0].Value = "Кит с лучшей приспособленностью:";
-            dataGridViewIterationInfo.Rows[4].Cells[0].Value = "Приспособленность лучшего кита:";
+            dataGridViewIterationInfo.Rows[3].Cells[0].Value = "Особь с лучшей приспособленностью:";
+            dataGridViewIterationInfo.Rows[4].Cells[0].Value = "Приспособленность лучшей особи:";
             dataGridViewIterationInfo.Rows[5].Cells[0].Value = "Средняя приспособленность популяции:";
         }
 
@@ -152,6 +149,7 @@ namespace DA
                     F = z,
                     D = obl
                 };
+
                 algst.lb = new Vector(algst.D[0, 0], algst.D[1, 0]);
                 algst.ub = new Vector(algst.D[0, 1], algst.D[1, 1]);
                 algst.MaxDelta = (algst.ub - algst.lb) / 10;
@@ -286,18 +284,16 @@ namespace DA
                 for (int i = 0; i < algst.population; i++)
                     e.Graphics.FillEllipse(Brushes.Blue, (float)((algst.individuals[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.individuals[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
 
+                for (int i = 0; i < algst.pool.Count; i++)
+                    e.Graphics.FillEllipse(Brushes.Orange, (float)((algst.pool[i].coords[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.pool[i].coords[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
+
                 if (Red[0] != true) 
                 {
-                    e.Graphics.FillEllipse(Brushes.Red, (float)((algst.best.coords[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.best.coords[1] * k - y1) * h / (y2 - y1) - 3), 8, 8);
-                    e.Graphics.FillEllipse(Brushes.Black, (float)((algst.worst.coords[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.worst.coords[1] * k - y1) * h / (y2 - y1) - 3), 8, 8);
+                    e.Graphics.FillEllipse(Brushes.Red, (float)((algst.best.coords[0] * k - x1) * w / (x2 - x1) - 5), (float)(h - (algst.best.coords[1] * k - y1) * h / (y2 - y1) - 5), 10, 10);
+                    e.Graphics.FillEllipse(Brushes.Black, (float)((algst.worst.coords[0] * k - x1) * w / (x2 - x1) - 5), (float)(h - (algst.worst.coords[1] * k - y1) * h / (y2 - y1) - 5), 10, 10);
                 }
                 
             }
-
-            //if((Red[1] == true)||(Red[2] == true)||(Red[3] == true))
-            //{
-            //    e.Graphics.DrawEllipse(p14, (float)((algst.individuals[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 2) - 7, (float)(h - (algst.individuals[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 2) - 7, 20, 20);
-            //}
 
             for (int i = -6; i < 12; i++)
             {
@@ -460,8 +456,8 @@ namespace DA
                     Red[4] = true;
                 }
                 pictureBoxDiagramm.Refresh();
-                chartGraph.Series[0].Points.AddXY(algst.currentIteration + 1, algst.bestFitness[algst.bestFitness.Count - 1]);
-                chartGraph.Series[1].Points.AddXY(algst.currentIteration + 1, algst.averageFitness[algst.averageFitness.Count - 1]);
+                chartGraph.Series[0].Points.AddXY(algst.currentIteration, algst.bestFitness[algst.bestFitness.Count - 1]);
+                chartGraph.Series[1].Points.AddXY(algst.currentIteration, algst.averageFitness[algst.averageFitness.Count - 1]);
             }
         }
         private void buttonEnd_Click(object sender, EventArgs e)
@@ -506,8 +502,8 @@ namespace DA
                 }
                 pictureBox1.Refresh();
                 pictureBoxDiagramm.Refresh();
-                chartGraph.Series[0].Points.AddXY(algst.currentIteration + 1, algst.bestFitness[algst.bestFitness.Count - 1]);
-                chartGraph.Series[1].Points.AddXY(algst.currentIteration + 1, algst.averageFitness[algst.averageFitness.Count - 1]);
+                chartGraph.Series[0].Points.AddXY(algst.currentIteration, algst.bestFitness[algst.bestFitness.Count - 1]);
+                chartGraph.Series[1].Points.AddXY(algst.currentIteration, algst.averageFitness[algst.averageFitness.Count - 1]);
 
             }
         }

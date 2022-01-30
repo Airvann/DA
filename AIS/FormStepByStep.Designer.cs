@@ -57,7 +57,6 @@
             this.pictureBoxDiagramm = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.chartGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAnswer)).BeginInit();
@@ -81,7 +80,7 @@
             // buttonMove
             // 
             this.buttonMove.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonMove.Location = new System.Drawing.Point(222, 137);
+            this.buttonMove.Location = new System.Drawing.Point(216, 137);
             this.buttonMove.Name = "buttonMove";
             this.buttonMove.Size = new System.Drawing.Size(135, 75);
             this.buttonMove.TabIndex = 10;
@@ -103,7 +102,7 @@
             // buttonEndVerify
             // 
             this.buttonEndVerify.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonEndVerify.Location = new System.Drawing.Point(141, 367);
+            this.buttonEndVerify.Location = new System.Drawing.Point(139, 367);
             this.buttonEndVerify.Name = "buttonEndVerify";
             this.buttonEndVerify.Size = new System.Drawing.Size(135, 75);
             this.buttonEndVerify.TabIndex = 15;
@@ -284,7 +283,7 @@
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox1.Location = new System.Drawing.Point(835, 31);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(490, 490);
+            this.pictureBox1.Size = new System.Drawing.Size(530, 530);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
@@ -299,18 +298,6 @@
             this.label2.TabIndex = 26;
             this.label2.Text = "График изменения средней (зеленый) и наилучшей (синий) \r\nприспособленности популя" +
     "ции:";
-            // 
-            // label3
-            // 
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.ForeColor = System.Drawing.Color.Black;
-            this.label3.Location = new System.Drawing.Point(835, 524);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(490, 37);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Красная окружность на графике соответствуют лучшему значению по величине функции " +
-    "на текущей итерации.";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // chartGraph
             // 
@@ -342,9 +329,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1337, 704);
+            this.ClientSize = new System.Drawing.Size(1372, 704);
             this.Controls.Add(this.chartGraph);
-            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.buttonNext);
@@ -360,7 +346,7 @@
             this.Controls.Add(this.pictureBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormStepByStep";
-            this.Text = "Метод горбатых китов. Работа по шагам";
+            this.Text = "Метод стаи стрекоз. Работа по шагам";
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAnswer)).EndInit();
             this.groupBox2.ResumeLayout(false);
@@ -392,7 +378,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartGraph;

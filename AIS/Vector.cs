@@ -14,27 +14,6 @@ namespace DA
         }
         public Vector() { }
 
-        public static Vector HadamardMultiply(Vector vector, double value)
-        {
-            Vector tmp = new Vector();
-            for (int i = 0; i < dim; i++)
-                tmp[i] = vector[i] * value;
-            return tmp;
-        }
-
-        public static Vector HadamardMultiply(double value, Vector vector)
-        {
-            return HadamardMultiply(vector, value);
-        }
-
-        public static Vector HadamardMultiply(Vector vector1, Vector vector2)
-        {
-            Vector tmp = new Vector();
-            for (int i = 0; i < dim; i++)
-                tmp[i] = vector1[i] * vector2[i];
-            return tmp;
-        }
-
         public static Vector Norm(Vector vector)
         {
             Vector tmp = new Vector();

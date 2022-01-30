@@ -127,7 +127,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(3, 215);
+            this.label2.Location = new System.Drawing.Point(6, 241);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(225, 16);
             this.label2.TabIndex = 4;
@@ -157,7 +157,7 @@
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle5;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 234);
+            this.dataGridView1.Location = new System.Drawing.Point(6, 260);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.Size = new System.Drawing.Size(183, 70);
@@ -301,7 +301,7 @@
             dataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dataGridView3.DefaultCellStyle = dataGridViewCellStyle13;
-            this.dataGridView3.Location = new System.Drawing.Point(15, 168);
+            this.dataGridView3.Location = new System.Drawing.Point(11, 168);
             this.dataGridView3.Name = "dataGridView3";
             this.dataGridView3.ReadOnly = true;
             this.dataGridView3.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
@@ -350,7 +350,7 @@
             // button5
             // 
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.button5.Location = new System.Drawing.Point(1105, 522);
+            this.button5.Location = new System.Drawing.Point(1089, 522);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(169, 34);
             this.button5.TabIndex = 32;
@@ -371,9 +371,9 @@
             // 
             this.groupBox2.Controls.Add(this.pictureBox3);
             this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox2.Location = new System.Drawing.Point(397, 20);
+            this.groupBox2.Location = new System.Drawing.Point(390, 20);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(379, 212);
+            this.groupBox2.Size = new System.Drawing.Size(370, 212);
             this.groupBox2.TabIndex = 37;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Постановка задачи";
@@ -397,9 +397,9 @@
             this.groupBox3.Controls.Add(this.dataGridView3);
             this.groupBox3.Controls.Add(this.buttonStepByStep);
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.groupBox3.Location = new System.Drawing.Point(397, 250);
+            this.groupBox3.Location = new System.Drawing.Point(390, 250);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(379, 266);
+            this.groupBox3.Size = new System.Drawing.Size(370, 266);
             this.groupBox3.TabIndex = 0;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Работа алгоритма";
@@ -419,7 +419,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(782, 7);
+            this.label5.Location = new System.Drawing.Point(763, 7);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(340, 16);
             this.label5.TabIndex = 38;
@@ -428,7 +428,7 @@
             // buttonHelp
             // 
             this.buttonHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonHelp.Location = new System.Drawing.Point(782, 522);
+            this.buttonHelp.Location = new System.Drawing.Point(766, 522);
             this.buttonHelp.Name = "buttonHelp";
             this.buttonHelp.Size = new System.Drawing.Size(169, 34);
             this.buttonHelp.TabIndex = 39;
@@ -440,7 +440,7 @@
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.Window;
             this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox1.Location = new System.Drawing.Point(782, 26);
+            this.pictureBox1.Location = new System.Drawing.Point(766, 26);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(492, 490);
             this.pictureBox1.TabIndex = 0;
@@ -451,7 +451,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1281, 560);
+            this.ClientSize = new System.Drawing.Size(1266, 560);
             this.Controls.Add(this.buttonHelp);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.groupBox3);
@@ -463,7 +463,6 @@
             this.Name = "FormMain";
             this.Text = "Метод, имитирующий поведение стаи стрекоз поиска условного экстремума функций";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormMain_FormClosed);
-            this.Load += new System.EventHandler(this.FormMain_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.groupBox1.ResumeLayout(false);

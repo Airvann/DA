@@ -68,10 +68,10 @@ namespace DA
             FileStream fs = new FileStream("protocol.txt", FileMode.Append, FileAccess.Write);
 
             StreamWriter r = new StreamWriter(fs);
-            r.Write($"+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n" +
-                    $"| Номер функции | Размер популяции | Количество итераций |          Параметр          |        Cреднее значение отклонения    |  Наименьшее значение отклонения  |Среднеквадратическое отклонение | Количество успехов  |\n" +
-                    $"|               |                  |                     |  логарифмической спирали   |           от точного решения          |                                  |                                |                     |\n" +
-                    $"|---------------+------------------+---------------------+----------------------------+---------------------------------------+----------------------------------+--------------------------------+---------------------|\n");
+            r.Write($"+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n" +
+                    $"| Номер функции | Размер популяции | Количество итераций |    Cреднее значение отклонения    |  Наименьшее значение отклонения  |Среднеквадратическое отклонение | Количество успехов  |\n" +
+                    $"|               |                  |                     |       от точного решения          |                                  |                                |                     |\n" +
+                    $"|---------------+------------------+---------------------+-----------------------------------+----------------------------------+--------------------------------+---------------------|\n");
             r.Close();
             fs.Close();
         }
@@ -431,11 +431,11 @@ namespace DA
                 if (flag2 == true)
                 {
                     for (int i = 0; i < alg.pool.Count; i++)
-                        e.Graphics.FillEllipse(Brushes.Orange, (float)((alg.pool[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.pool[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
+                        e.Graphics.FillEllipse(Brushes.Orange, (float)((alg.pool[i].coords[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.pool[i].coords[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
 
                     for (int i = 0; i < alg.individuals.Count; i++)
-                        e.Graphics.FillEllipse(Brushes.Blue, (float)((alg.individuals[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.individuals[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
-                    e.Graphics.FillEllipse(Brushes.Red, (float)((alg.pool[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 4), (float)(h - (alg.pool[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 4), 8, 8);
+                        e.Graphics.FillEllipse(Brushes.Blue, (float)((alg.individuals[i].coords[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.individuals[i].coords[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
+                    e.Graphics.FillEllipse(Brushes.Red, (float)((alg.pool[0].coords[0] * k - x1) * w / (x2 - x1) - 4), (float)(h - (alg.pool[0].coords[1] * k - y1) * h / (y2 - y1) - 4), 8, 8);
                 }
 
                 //отрисовка Осей
@@ -519,7 +519,7 @@ namespace DA
             population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
             MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
 
-            FormStepByStep form = new FormStepByStep(comboBox1.SelectedIndex, obl, population, MaxIteration, 0, exact)
+            FormStepByStep form = new FormStepByStep(comboBox1.SelectedIndex, obl, population, MaxIteration, exact)
             {
                 flines = flines,
                 showobl = showobl,
@@ -586,7 +586,6 @@ namespace DA
                                 break;
                             }
                         }
-
                         averFuncDeviation.Add(Math.Abs(result.fitness - exact));
                     }
 
@@ -606,8 +605,8 @@ namespace DA
 
                     FileStream fs = new FileStream("protocol.txt", FileMode.Append, FileAccess.Write);
                     StreamWriter r = new StreamWriter(fs);
-                    r.Write(String.Format(@"| {0, 4}          |      {1, 6}      |        {2, 4}         |        {3, 6}              |{4, 22:f6}                 |{5, 20:f6}              |{6, 20:f6}            |{7, 12}         |
-|---------------+------------------+---------------------+----------------------------+---------------------------------------+----------------------------------+--------------------------------+---------------------|", z + 1, population, MaxIteration, 0, averDer, minDeviation, normalDerivation, successCount));
+                    r.Write(String.Format(@"|   {0, 4}        |      {1, 6}      |        {2, 4}         |{3, 22:f6}             |{4, 20:f6}              |{5, 20:f6}            |{6, 12}         |
+|---------------+------------------+---------------------+-----------------------------------+----------------------------------+--------------------------------+---------------------|", z + 1, population, MaxIteration, averDer, minDeviation, normalDerivation, successCount));
                     r.Write("\n");
                     r.Close();
                     fs.Close();
@@ -622,11 +621,6 @@ namespace DA
         {
             if (File.Exists("protocol.txt"))
                 File.Delete("protocol.txt");
-        }
-
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }

@@ -81,10 +81,11 @@ namespace DA
 
             FormingPopulation();
             SetZeros();
+            currentIteration = 0;
 
-            for (int k = 0; k < MaxCount; k++)
+            for (; currentIteration < MaxCount; currentIteration++)
             {
-                UpdateParams(k);
+                UpdateParams(currentIteration);
                 PopulationOrder();
                 NewPackGeneration();
                 currentIteration++;
@@ -95,11 +96,9 @@ namespace DA
         public void UpdateParams(int k)
         {
             w = 0.9 - k * ((0.9 - 0.4) / MaxCount);
-
             double my_c = 0.1 - k * ((0.9 - 0.4) / (0.5 * MaxCount));
             if (my_c < 0)
                 my_c = 0;
-
             s = 2 * rand.NextDouble() * my_c;
             a = 2 * rand.NextDouble() * my_c;
             c = 2 * rand.NextDouble() * my_c;
@@ -126,21 +125,18 @@ namespace DA
         public void PopulationOrder()
         {
             individuals = individuals.OrderBy(s => s.fitness).ToList();
-            
             best = new Agent(individuals[0].coords[0], individuals[0].coords[1], individuals[0].fitness);
             worst = new Agent(individuals[population - 1].coords[0], individuals[population - 1].coords[1], individuals[population - 1].fitness);
-
             pool.Add(best);
         }
 
         //Формирование новой стаи
         public void NewPackGeneration()
         {
+            R = ((ub - lb) / 4) + ((ub - lb) * (currentIteration / MaxCount) * 2);
 
             for (int i = 0; i < population; i++)
-            {
-                R = ((ub - lb) / 4) + ((ub - lb) * (i / MaxCount) * 2);
-
+            {              
                 List<Agent> neighbourhood = new List<Agent>();
                 
                 for (int j = 0; j < population; j++)
@@ -151,7 +147,7 @@ namespace DA
                     if (dist1 < R[0] && dist2 < R[1] && dist1 != 0 && dist2 != 0)
                         neighbourhood.Add(individuals[j]);
                 }
-                if (neighbourhood.Count > 2)
+                if (neighbourhood.Count > 1)
                 {
                     //Разделение
                     Vector S = new Vector(0, 0);
@@ -205,16 +201,11 @@ namespace DA
                 {
                     double beta = 1.5f;
                     double sigma = Math.Pow(SpecialFunctions.Gamma(1+beta)*Math.Sin(Math.PI*beta/2f)/(SpecialFunctions.Gamma((1+beta)/2f)*beta*Math.Pow(2,(beta-1)/2f)), 1/beta);
-
                     int dim = 2;
-
                     Vector Levy = new Vector();
-
                     Levy.vector[0] = 0.01 * rand.NextDouble() * dim * sigma / Math.Pow(Math.Abs(rand.NextDouble() * dim), 1 / beta);
                     Levy.vector[1] = 0.01 * rand.NextDouble() * dim * sigma / Math.Pow(Math.Abs(rand.NextDouble() * dim), 1 / beta);
-
                     individuals[i].coords = individuals[i].coords + Levy * individuals[i].coords;
-
                     SetZeros();
                 }
                 individuals[i].fitness = function(individuals[i].coords[0], individuals[i].coords[1], F);
@@ -231,14 +222,11 @@ namespace DA
                 steps[i][1] = 0;
             }
         }
-
         private Agent PoolBest() 
         {
             pool = pool.OrderBy(s => s.fitness).ToList();
             return pool[0];
-        }
-
-        
+        }   
         //Все тестовые функции
         private float function(double x1, double x2, int F)
         {
@@ -269,7 +257,6 @@ namespace DA
 
             return funct;
         }
-
         //Вспомогательная функция
         private double[] Cpow(double x, double y, int p)
         {
@@ -285,7 +272,6 @@ namespace DA
             }
             return Cp;
         }
-
         //метод вычисления средней приспособленности
         public double AverageFitness()
         {
