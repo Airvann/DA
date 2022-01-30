@@ -34,6 +34,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormStepByStep));
             this.label1 = new System.Windows.Forms.Label();
             this.buttonMove = new System.Windows.Forms.Button();
@@ -54,15 +57,15 @@
             this.pictureBoxDiagramm = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.pictureBoxGraph = new System.Windows.Forms.PictureBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.chartGraph = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAnswer)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIterationInfo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDiagramm)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGraph)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartGraph)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -78,7 +81,7 @@
             // buttonMove
             // 
             this.buttonMove.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.buttonMove.Location = new System.Drawing.Point(223, 137);
+            this.buttonMove.Location = new System.Drawing.Point(222, 137);
             this.buttonMove.Name = "buttonMove";
             this.buttonMove.Size = new System.Drawing.Size(135, 75);
             this.buttonMove.TabIndex = 10;
@@ -297,17 +300,6 @@
             this.label2.Text = "График изменения средней (зеленый) и наилучшей (синий) \r\nприспособленности популя" +
     "ции:";
             // 
-            // pictureBoxGraph
-            // 
-            this.pictureBoxGraph.BackColor = System.Drawing.SystemColors.Window;
-            this.pictureBoxGraph.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBoxGraph.Location = new System.Drawing.Point(416, 50);
-            this.pictureBoxGraph.Name = "pictureBoxGraph";
-            this.pictureBoxGraph.Size = new System.Drawing.Size(402, 424);
-            this.pictureBoxGraph.TabIndex = 25;
-            this.pictureBoxGraph.TabStop = false;
-            this.pictureBoxGraph.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBoxGraph_Paint);
-            // 
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
@@ -320,14 +312,40 @@
     "на текущей итерации.";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // chartGraph
+            // 
+            chartArea1.AxisX.Title = "Число итераций";
+            chartArea1.AxisX.TitleAlignment = System.Drawing.StringAlignment.Far;
+            chartArea1.AxisY.Title = "f(x)";
+            chartArea1.AxisY.TitleAlignment = System.Drawing.StringAlignment.Far;
+            chartArea1.Name = "ChartArea1";
+            this.chartGraph.ChartAreas.Add(chartArea1);
+            this.chartGraph.Location = new System.Drawing.Point(416, 50);
+            this.chartGraph.Name = "chartGraph";
+            series1.BorderWidth = 3;
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Name = "Series1";
+            series2.BorderWidth = 3;
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series2.Color = System.Drawing.Color.OliveDrab;
+            series2.Name = "Series2";
+            series2.YValuesPerPoint = 2;
+            this.chartGraph.Series.Add(series1);
+            this.chartGraph.Series.Add(series2);
+            this.chartGraph.Size = new System.Drawing.Size(402, 433);
+            this.chartGraph.TabIndex = 27;
+            this.chartGraph.Text = "chart1";
+            // 
             // FormStepByStep
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1337, 704);
+            this.Controls.Add(this.chartGraph);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.pictureBoxGraph);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.buttonNext);
             this.Controls.Add(this.buttonAnswer);
@@ -349,7 +367,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewIterationInfo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDiagramm)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxGraph)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartGraph)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -372,11 +390,11 @@
         private System.Windows.Forms.DataGridView dataGridViewIterationInfo;
         private System.Windows.Forms.DataGridView dataGridViewAnswer;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.PictureBox pictureBoxGraph;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartGraph;
     }
 }

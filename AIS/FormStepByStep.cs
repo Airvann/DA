@@ -149,7 +149,7 @@ namespace DA
                 {
                     MaxCount = MaxIteration,
                     population = PopulationCount, 
-                    f = z,
+                    F = z,
                     D = obl
                 };
                 algst.lb = new Vector(algst.D[0, 0], algst.D[1, 0]);
@@ -199,7 +199,7 @@ namespace DA
             Font font2 = new Font("TimesNewRoman", 8);
 
             pictureBox1.BackColor = Color.White;
-         
+
             //TODO: ShowObl == Obl?
             double x1 = showobl[0, 0];
             double x2 = showobl[0, 1];
@@ -262,10 +262,10 @@ namespace DA
                     double i0 = ((ii - 1) * (Math.Max(x2 - x1, y2 - y1)) / w + x1) / k;
                     double j0 = ((jj - 1) * (Math.Max(x2 - x1, y2 - y1)) / h + y1) / k;
                     double f = function(i, j, z);
-                    double f2 = function(i0, j, z); 
-                    double f3 = function(i, j0, z); 
-                    double f4 = function(i1, j, z); 
-                    double f5 = function(i, j1, z); 
+                    double f2 = function(i0, j, z);
+                    double f3 = function(i, j0, z);
+                    double f4 = function(i1, j, z);
+                    double f5 = function(i, j1, z);
                     double f6 = function(i1, j1, z);
                     double f7 = function(i0, j1, z);
                     double f8 = function(i1, j0, z);
@@ -286,8 +286,12 @@ namespace DA
                 for (int i = 0; i < algst.population; i++)
                     e.Graphics.FillEllipse(Brushes.Blue, (float)((algst.individuals[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.individuals[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
 
-                if (Red[0] != true)
-                    e.Graphics.FillEllipse(Brushes.Red, (float)((algst.individuals[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.individuals[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 8, 8);
+                if (Red[0] != true) 
+                {
+                    e.Graphics.FillEllipse(Brushes.Red, (float)((algst.best.coords[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.best.coords[1] * k - y1) * h / (y2 - y1) - 3), 8, 8);
+                    e.Graphics.FillEllipse(Brushes.Black, (float)((algst.worst.coords[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (algst.worst.coords[1] * k - y1) * h / (y2 - y1) - 3), 8, 8);
+                }
+                
             }
 
             //if((Red[1] == true)||(Red[2] == true)||(Red[3] == true))
@@ -416,7 +420,6 @@ namespace DA
 
                 pictureBoxDiagramm.Refresh();
                 pictureBox1.Refresh();
-                pictureBoxGraph.Refresh();
             }
         }
 
@@ -457,6 +460,8 @@ namespace DA
                     Red[4] = true;
                 }
                 pictureBoxDiagramm.Refresh();
+                chartGraph.Series[0].Points.AddXY(algst.currentIteration + 1, algst.bestFitness[algst.bestFitness.Count - 1]);
+                chartGraph.Series[1].Points.AddXY(algst.currentIteration + 1, algst.averageFitness[algst.averageFitness.Count - 1]);
             }
         }
         private void buttonEnd_Click(object sender, EventArgs e)
@@ -483,14 +488,16 @@ namespace DA
             {
                 if (algst.currentIteration < algst.MaxCount)
                 {
-                //    algst.Selection();
+                    algst.UpdateParams(algst.currentIteration);
+                    algst.PopulationOrder();
                     algst.NewPackGeneration();
 
-                    algst.AverageFitness();
-                    algst.bestFitness.Add(algst.best.fitness);
-                    algst.currentIteration++;
 
+                    algst.currentIteration++;
+                    algst.bestFitness.Add(algst.best.fitness);
+                    algst.AverageFitness();
                     UpdateIterationInfo();
+
                 }
                 else
                 {
@@ -498,112 +505,13 @@ namespace DA
                     Red[4] = true;
                 }
                 pictureBox1.Refresh();
-                pictureBoxGraph.Refresh();
                 pictureBoxDiagramm.Refresh();
+                chartGraph.Series[0].Points.AddXY(algst.currentIteration + 1, algst.bestFitness[algst.bestFitness.Count - 1]);
+                chartGraph.Series[1].Points.AddXY(algst.currentIteration + 1, algst.averageFitness[algst.averageFitness.Count - 1]);
+
             }
         }
-        private void pictureBoxGraph_Paint(object sender, PaintEventArgs e)
-        {
-            if (flag == true)
-            {
-                float w = pictureBoxGraph.Width;
-                float h = pictureBoxGraph.Height;
-                Pen p1 = new Pen(Color.Black, 1);
-                Pen p2 = new Pen(Color.Green, 2);
-                Pen p3 = new Pen(Color.Blue, 2);
-                Pen p4 = new Pen(Color.Red, 2);
-                Font f1 = new Font("TimesNewRoman", 7);
-                Font f2 = new Font("TimesNewRoman", 7, FontStyle.Bold);
-                float x0 = 25;
-                float y0 = h - 20;
-                e.Graphics.DrawLine(p1, x0, y0, w, y0);
-                e.Graphics.DrawLine(p1, x0, y0, x0, 0);
-                e.Graphics.DrawLine(p1, x0, 0, x0 - 5, 10);
-                e.Graphics.DrawLine(p1, x0, 0, x0 + 5, 10);
-                e.Graphics.DrawLine(p1, w - 5, y0, w - 15, y0 + 5);
-                e.Graphics.DrawLine(p1, w - 5, y0, w - 15, y0 - 5);
-
-                float mx = (w - 60) / (algst.currentIteration + 5);
-                float mh = 0;
-                try { mh = (float)((h - 60) / ((1.1 * exact - Math.Min(0, algst.averageFitness[0])))); }
-                catch { mh = (float)((h - 60) / (1.1 * exact)); }
-
-                double a = 1;
-
-
-                if (algst.currentIteration < 31) a = 2;
-                else if (algst.currentIteration < 101) a = 5;
-                else if (algst.currentIteration < 151) a = 10;
-                else if (algst.currentIteration < 301) a = 20;
-                else if (algst.currentIteration < 501) a = 50;
-                else if (algst.currentIteration < 1001) a = 100;
-                else if (algst.currentIteration < 2001) a = 200;
-                else a = 1000;
-
-                double b = 0;
-                try { b = 1.1 * exact - Math.Min(0, algst.averageFitness[0]); }
-                catch { b = 1.1 * exact; }
-                double c = 1;
-                if (b < 0.1) c = 0.01;
-                else if (b < 0.2) c = 0.02;
-                else if (b < 1) c = 0.1;
-                else if (b < 2) c = 0.2;
-                else if (b < 11) c = 1;
-                else if (b < 21) c = 2;
-                else if (b < 51) c = 5;
-                else if (b < 101) c = 10;
-                else if (b < 200) c = 20;
-                else if (b < 1000) c = 100;
-                else if (b < 2000) c = 200;
-                else c = 500;
-
-                for (int i = 0; i < algst.population; i++)
-                {
-
-                    //float s = i / a;
-                    if (Math.Floor((decimal)(i / a)) - (decimal)(i / a) == 0)
-                    {
-                        e.Graphics.DrawLine(p1, (float)(x0 + (mx) * (i)), y0 + 2, (float)(x0 + mx * (i)), y0 - 2);
-                        e.Graphics.DrawString(Convert.ToString(i), f1, Brushes.Black, (float)(x0 + mx * (i)), (float)(y0 + 4));
-
-                    }
-                }
-
-                if (Math.Floor((decimal)((algst.MaxCount) / a)) - (decimal)((algst.MaxCount) / a) == 0)
-                {
-                    e.Graphics.DrawLine(p1, (float)(x0 + (mx) * (algst.MaxCount)), y0 + 2, (float)(x0 + mx * (algst.MaxCount)), y0 - 2);
-                    e.Graphics.DrawString(Convert.ToString(algst.MaxCount), f1, Brushes.Black, (float)(x0 + mx * (algst.MaxCount)), (float)(y0 + 4));
-                }
-
-                if (flag == true)
-                {
-                    e.Graphics.FillEllipse(Brushes.Green, (float)(x0), (float)(y0 - 1 - mh * (algst.averageFitness[0] - Math.Min(0, algst.averageFitness[0]))), 3, 3);
-                    e.Graphics.FillEllipse(Brushes.Blue, (float)(x0), (float)(y0 - 1 - mh * (algst.best.coords[0] - Math.Min(0, algst.averageFitness[0]))), 3, 3);
-
-
-                    if (algst.bestFitness.Count >= 2 && algst.averageFitness.Count >= 2)
-                    for (int i = 0; i < algst.averageFitness.Count - 1; i++)
-                    {
-                        {
-                            e.Graphics.DrawLine(p2, (float)(x0 + mx * i), (float)(y0 - mh * (algst.averageFitness[i] - Math.Min(0, algst.averageFitness[0]))), (float)(x0 + mx * (i + 1)), (float)(y0 - mh * (algst.averageFitness[i + 1] - Math.Min(0, algst.averageFitness[0]))));
-                            e.Graphics.DrawLine(p3, (float)(x0 + mx * i), (float)(y0 - mh * (algst.bestFitness[i] - Math.Min(0, algst.averageFitness[0]))), (float)(x0 + mx * (i + 1)), (float)(y0 - mh * (algst.bestFitness[i + 1] - Math.Min(0, algst.averageFitness[0]))));
-                        }
-                    }
-                }
-
-                float zero = 0;
-                try { zero = (float)(y0 + mh * Math.Min(0, algst.averageFitness[0])); }
-                catch { zero = (float)(y0); }
-
-                for (int i = -6; i < 12; i++)
-                {
-                    e.Graphics.DrawLine(p1, (float)(x0 + 2), (float)(zero - mh * c * i), (float)(x0 - 2), (float)(zero - mh * c * i));
-                    if ((zero - mh * c * i - 8 > 11) && (zero - mh * c * i - 8 < h - 20)) e.Graphics.DrawString(Convert.ToString((c * i)), f1, Brushes.Black, (float)(x0 - 24), (float)(zero - mh * c * i - 8));
-                }
-                e.Graphics.DrawString("k", f2, Brushes.Black, (float)(w - 15), (float)(y0 + 4));
-                e.Graphics.DrawString("f", f2, Brushes.Black, (float)(x0 - 24), (float)(2));
-            }
-        }
+        
         private void buttonAnswer_Click(object sender, EventArgs e)
         {
             if (Red[3] == true) 
@@ -611,16 +519,17 @@ namespace DA
                 Red[3] = false;
                 for (int i = 1; algst.currentIteration < MaxIteration; i++)
                 {
-                 //   algst.Selection();
+                    algst.UpdateParams(algst.currentIteration);
+                    algst.PopulationOrder();
                     algst.NewPackGeneration();
 
+                    algst.currentIteration++;
                     algst.bestFitness.Add(algst.best.fitness);
                     algst.AverageFitness();
 
-                    algst.currentIteration++;
+                    chartGraph.Series[0].Points.AddXY(algst.currentIteration + 1, algst.bestFitness[algst.bestFitness.Count - 1]);
+                    chartGraph.Series[1].Points.AddXY(algst.currentIteration + 1, algst.averageFitness[algst.averageFitness.Count - 1]);
                 }
-
-              //  algst.Selection();
 
                 UpdateAnswer();
                 UpdateIterationInfo();
@@ -628,7 +537,6 @@ namespace DA
                 pictureBox1.Refresh();
                 dataGridViewIterationInfo.Refresh();
                 dataGridViewAnswer.Refresh();
-                pictureBoxGraph.Refresh();
                 pictureBoxDiagramm.Refresh();
                 flag = false;
             }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Diagnostics;
-using System.Windows.Forms;
 using System.IO;
+using System.Windows.Forms;
 
 namespace DA
 {
@@ -93,35 +93,35 @@ namespace DA
             dataGridView3.Columns[0].DefaultCellStyle.Font = new Font("Times new roman", 12, FontStyle.Italic);
             dataGridView3.Rows[0].Cells[0].Value = "x";
             dataGridView3.Rows[1].Cells[0].Value = "y";
-            dataGridView3.Rows[2].Cells[0].Value = "f*";            
+            dataGridView3.Rows[2].Cells[0].Value = "f*";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if( dataGridView1.Rows[0].Cells[1].Value != null  &&
-                dataGridView1.Rows[0].Cells[2].Value != null  &&
-                dataGridView1.Rows[1].Cells[1].Value != null  &&
-                dataGridView1.Rows[1].Cells[2].Value!= null)   
+            if (dataGridView1.Rows[0].Cells[1].Value != null &&
+                dataGridView1.Rows[0].Cells[2].Value != null &&
+                dataGridView1.Rows[1].Cells[1].Value != null &&
+                dataGridView1.Rows[1].Cells[2].Value != null)
             {
                 //создать начальную популяцию
-                    int z = comboBox1.SelectedIndex;
+                int z = comboBox1.SelectedIndex;
 
-                    obl[0, 0] = Convert.ToDouble(dataGridView1.Rows[0].Cells[1].Value);
-                    obl[0, 1] = Convert.ToDouble(dataGridView1.Rows[0].Cells[2].Value);
-                    obl[1, 0] = Convert.ToDouble(dataGridView1.Rows[1].Cells[1].Value);
-                    obl[1, 1] = Convert.ToDouble(dataGridView1.Rows[1].Cells[2].Value);
+                obl[0, 0] = Convert.ToDouble(dataGridView1.Rows[0].Cells[1].Value);
+                obl[0, 1] = Convert.ToDouble(dataGridView1.Rows[0].Cells[2].Value);
+                obl[1, 0] = Convert.ToDouble(dataGridView1.Rows[1].Cells[1].Value);
+                obl[1, 1] = Convert.ToDouble(dataGridView1.Rows[1].Cells[2].Value);
 
-                    population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
-                    MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
+                population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
+                MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
 
-                    alg = new Algoritm();
+                alg = new Algoritm();
 
-                    Agent result = alg.FastStartAlg(population, MaxIteration, obl, z);
-                    dataGridView3.Rows[0].Cells[1].Value = string.Format($"{result.coords[0]:F8}");
-                    dataGridView3.Rows[1].Cells[1].Value = string.Format($"{result.coords[1]:F8}");
-                    dataGridView3.Rows[2].Cells[1].Value = string.Format($"{result.fitness:F8}");
-                    flag2 = true;
-                    pictureBox1.Refresh();
+                Agent result = alg.FastStartAlg(population, MaxIteration, obl, z);
+                dataGridView3.Rows[0].Cells[1].Value = string.Format($"{result.coords[0]:F8}");
+                dataGridView3.Rows[1].Cells[1].Value = string.Format($"{result.coords[1]:F8}");
+                dataGridView3.Rows[2].Cells[1].Value = string.Format($"{result.fitness:F8}");
+                flag2 = true;
+                pictureBox1.Refresh();
             }
             else
                 MessageBox.Show("Введите корректные параметры", "Ошибка при запуске алгоритма", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -188,7 +188,7 @@ namespace DA
                 Ar[4] = 0.9F;
                 flag = true;
                 pictureBox2.Image = Properties.Resources.рут;
-            } 
+            }
             else if (comboBox1.SelectedIndex == 3)
             {
                 dataGridView1.Rows[0].Cells[1].Value = "-10";
@@ -333,15 +333,15 @@ namespace DA
         {
             float w = pictureBox1.Width;
             float h = pictureBox1.Height;
-            float x0 = w/2;
-            float y0 = h/2;
+            float x0 = w / 2;
+            float y0 = h / 2;
             float a = 30;
-            
+
             Pen p10 = new Pen(Color.Black, 1);
 
             Font font1 = new Font("TimesNewRoman", 10, FontStyle.Bold);
             Font font2 = new Font("TimesNewRoman", 8);
-            
+
             pictureBox1.BackColor = Color.White;
             if (flag)
             {
@@ -363,7 +363,7 @@ namespace DA
 
                 double dx = x2 - x1;
                 double dy = y2 - y1;
-                double dxy = dx-dy;
+                double dxy = dx - dy;
 
                 double bxy = Math.Max(dx, dy);
                 double step;
@@ -380,7 +380,7 @@ namespace DA
                 else if (bxy < 2000.1) step = 200;
                 else step = 1000;
 
-                if (dxy>0)
+                if (dxy > 0)
                 {
                     y1 = y1 - dxy / 2;
                     y2 = y2 + dxy / 2;
@@ -397,57 +397,57 @@ namespace DA
 
                 float mw = k * (w) / ((float)(Math.Max(x2 - x1, y2 - y1)));
                 float mh = k * (h) / ((float)(Math.Max(x2 - x1, y2 - y1)));
-                        for (int ii = 0; ii < w; ii++)
-                            for (int jj = 0; jj < h; jj++)
-                            {
-                                double i = (ii * (Math.Max(x2 - x1, y2 - y1)) / w + x1) / k;
-                                double j = (jj * (Math.Max(x2 - x1, y2 - y1)) / h + y1) / k;
-                                double i1 = ((ii + 1) * (Math.Max(x2 - x1, y2 - y1)) / w + x1) / k;
-                                double j1 = ((jj + 1) * (Math.Max(x2 - x1, y2 - y1)) / h + y1) / k;
-                                double i0 = ((ii - 1) * (Math.Max(x2 - x1, y2 - y1)) / w + x1) / k;
-                                double j0 = ((jj - 1) * (Math.Max(x2 - x1, y2 - y1)) / h + y1) / k;
-                                double f = function(i, j, z);
-                                double f2 = function(i0, j, z); 
-                                double f3 = function(i, j0, z); 
-                                double f4 = function(i1, j, z); 
-                                double f5 = function(i, j1, z); 
-                                double f6 = function(i1, j1, z);
-                                double f7 = function(i0, j1, z);
-                                double f8 = function(i1, j0, z);
-                                double f9 = function(i0, j0, z);
+                for (int ii = 0; ii < w; ii++)
+                    for (int jj = 0; jj < h; jj++)
+                    {
+                        double i = (ii * (Math.Max(x2 - x1, y2 - y1)) / w + x1) / k;
+                        double j = (jj * (Math.Max(x2 - x1, y2 - y1)) / h + y1) / k;
+                        double i1 = ((ii + 1) * (Math.Max(x2 - x1, y2 - y1)) / w + x1) / k;
+                        double j1 = ((jj + 1) * (Math.Max(x2 - x1, y2 - y1)) / h + y1) / k;
+                        double i0 = ((ii - 1) * (Math.Max(x2 - x1, y2 - y1)) / w + x1) / k;
+                        double j0 = ((jj - 1) * (Math.Max(x2 - x1, y2 - y1)) / h + y1) / k;
+                        double f = function(i, j, z);
+                        double f2 = function(i0, j, z);
+                        double f3 = function(i, j0, z);
+                        double f4 = function(i1, j, z);
+                        double f5 = function(i, j1, z);
+                        double f6 = function(i1, j1, z);
+                        double f7 = function(i0, j1, z);
+                        double f8 = function(i1, j0, z);
+                        double f9 = function(i0, j0, z);
 
-                                if (((f2 < a1) || (f3 < a1) || (f4 < a1) || (f5 < a1) || (f6 < a1) || (f7 < a1) || (f8 < a1) || (f9 < a1)) && (f > a1)&&(flines[4]==true)) e.Graphics.FillRectangle(Brushes.PaleGreen, (float)(ii), (float)(h - jj), 1, 1);
-                                else if (((f2 < a3) || (f3 < a3) || (f4 < a3) || (f5 < a3) || (f6 < a3) || (f7 < a3) || (f8 < a3) || (f9 < a3)) && (f > a3)&&(flines[3]==true)) e.Graphics.FillRectangle(Brushes.YellowGreen, (float)(ii), (float)(h - jj), 1, 1);
-                                else if (((f2 < a5) || (f3 < a5) || (f4 < a5) || (f5 < a5) || (f6 < a5) || (f7 < a5) || (f8 < a5) || (f9 < a5)) && (f > a5)&&(flines[2]==true)) e.Graphics.FillRectangle(Brushes.Orange, (float)(ii), (float)(h - jj), 1, 1);
-                                else if (((f2 < a7) || (f3 < a7) || (f4 < a7) || (f5 < a7) || (f6 < a7) || (f7 < a7) || (f8 < a7) || (f9 < a7)) && (f > a7)&&(flines[1]==true)) e.Graphics.FillRectangle(Brushes.Red, (float)(ii), (float)(h - jj), 1, 1);
-                                else if (((f2 < a9) || (f3 < a9) || (f4 < a9) || (f5 < a9) || (f6 < a9) || (f7 < a9) || (f8 < a9) || (f9 < a9)) && (f > a9)&&(flines[0]==true)) e.Graphics.FillRectangle(Brushes.Maroon, (float)(ii), (float)(h - jj), 1, 1);
-                                else if (((f2 < a10) || (f3 < a10) || (f4 < a10) || (f5 < a10) || (f6 < a10) || (f7 < a10) || (f8 < a10) || (f9 < a10)) && (f > a10) && (flines[5] == true)) e.Graphics.FillRectangle(Brushes.Pink, (float)(ii), (float)(h - jj), 1, 1);
-                                else if (((f2 < a11) || (f3 < a11) || (f4 < a11) || (f5 < a11) || (f6 < a11) || (f7 < a11) || (f8 < a11) || (f9 < a11)) && (f > a11) && (flines[6] == true)) e.Graphics.FillRectangle(Brushes.Violet, (float)(ii), (float)(h - jj), 1, 1);
-                                else if (((f2 < a12) || (f3 < a12) || (f4 < a12) || (f5 < a12) || (f6 < a12) || (f7 < a12) || (f8 < a12) || (f9 < a12)) && (f > a12) && (flines[7] == true)) e.Graphics.FillRectangle(Brushes.MediumOrchid, (float)(ii), (float)(h - jj), 1, 1);
+                        if (((f2 < a1) || (f3 < a1) || (f4 < a1) || (f5 < a1) || (f6 < a1) || (f7 < a1) || (f8 < a1) || (f9 < a1)) && (f > a1) && (flines[4] == true)) e.Graphics.FillRectangle(Brushes.PaleGreen, (float)(ii), (float)(h - jj), 1, 1);
+                        else if (((f2 < a3) || (f3 < a3) || (f4 < a3) || (f5 < a3) || (f6 < a3) || (f7 < a3) || (f8 < a3) || (f9 < a3)) && (f > a3) && (flines[3] == true)) e.Graphics.FillRectangle(Brushes.YellowGreen, (float)(ii), (float)(h - jj), 1, 1);
+                        else if (((f2 < a5) || (f3 < a5) || (f4 < a5) || (f5 < a5) || (f6 < a5) || (f7 < a5) || (f8 < a5) || (f9 < a5)) && (f > a5) && (flines[2] == true)) e.Graphics.FillRectangle(Brushes.Orange, (float)(ii), (float)(h - jj), 1, 1);
+                        else if (((f2 < a7) || (f3 < a7) || (f4 < a7) || (f5 < a7) || (f6 < a7) || (f7 < a7) || (f8 < a7) || (f9 < a7)) && (f > a7) && (flines[1] == true)) e.Graphics.FillRectangle(Brushes.Red, (float)(ii), (float)(h - jj), 1, 1);
+                        else if (((f2 < a9) || (f3 < a9) || (f4 < a9) || (f5 < a9) || (f6 < a9) || (f7 < a9) || (f8 < a9) || (f9 < a9)) && (f > a9) && (flines[0] == true)) e.Graphics.FillRectangle(Brushes.Maroon, (float)(ii), (float)(h - jj), 1, 1);
+                        else if (((f2 < a10) || (f3 < a10) || (f4 < a10) || (f5 < a10) || (f6 < a10) || (f7 < a10) || (f8 < a10) || (f9 < a10)) && (f > a10) && (flines[5] == true)) e.Graphics.FillRectangle(Brushes.Pink, (float)(ii), (float)(h - jj), 1, 1);
+                        else if (((f2 < a11) || (f3 < a11) || (f4 < a11) || (f5 < a11) || (f6 < a11) || (f7 < a11) || (f8 < a11) || (f9 < a11)) && (f > a11) && (flines[6] == true)) e.Graphics.FillRectangle(Brushes.Violet, (float)(ii), (float)(h - jj), 1, 1);
+                        else if (((f2 < a12) || (f3 < a12) || (f4 < a12) || (f5 < a12) || (f6 < a12) || (f7 < a12) || (f8 < a12) || (f9 < a12)) && (f > a12) && (flines[7] == true)) e.Graphics.FillRectangle(Brushes.MediumOrchid, (float)(ii), (float)(h - jj), 1, 1);
 
-                            }
+                    }
 
-                        //Отрисовка результата работы алгоритма
-                        if (flag2 == true)
-                        {
-                            for (int i = 0; i < alg.pool.Count; i++)
-                                e.Graphics.FillEllipse(Brushes.Orange, (float)((alg.pool[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.pool[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
+                //Отрисовка результата работы алгоритма
+                if (flag2 == true)
+                {
+                    for (int i = 0; i < alg.pool.Count; i++)
+                        e.Graphics.FillEllipse(Brushes.Orange, (float)((alg.pool[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.pool[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
 
-                            for (int i = 0; i < alg.individuals.Count; i++)
-                                e.Graphics.FillEllipse(Brushes.Blue, (float)((alg.individuals[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.individuals[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
-                            e.Graphics.FillEllipse(Brushes.Red, (float)((alg.pool[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 4), (float)(h - (alg.pool[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 4), 8, 8);
-                        }                        
+                    for (int i = 0; i < alg.individuals.Count; i++)
+                        e.Graphics.FillEllipse(Brushes.Blue, (float)((alg.individuals[i].coords.vector[0] * k - x1) * w / (x2 - x1) - 3), (float)(h - (alg.individuals[i].coords.vector[1] * k - y1) * h / (y2 - y1) - 3), 6, 6);
+                    e.Graphics.FillEllipse(Brushes.Red, (float)((alg.pool[0].coords.vector[0] * k - x1) * w / (x2 - x1) - 4), (float)(h - (alg.pool[0].coords.vector[1] * k - y1) * h / (y2 - y1) - 4), 8, 8);
+                }
 
-                        //отрисовка Осей
-                        for (int i = -6; i < 12; i++)
-                        {
-                            e.Graphics.DrawLine(p10, (float)((x1 - i*step) * w / (x1 - x2)), h - a - 5, (float)((x1 - i*step) * w / (x1 - x2)), h - a + 5);
-                            e.Graphics.DrawLine(p10, a - 5, (float)(h - (y1 - i*step) * h / (y1 - y2)), a + 5, (float)(h - (y1 - i*step) * h / (y1 - y2)));
-                            e.Graphics.DrawString((i * step).ToString(), font2, Brushes.Black, (float)((x1 - i * step) * w / (x1 - x2)), h - a + 5);
-                            e.Graphics.DrawString((i * step).ToString(), font2, Brushes.Black, a - 30, (float)(h -5- (y1 - i * step) * h / (y1 - y2)));
-                        }
+                //отрисовка Осей
+                for (int i = -6; i < 12; i++)
+                {
+                    e.Graphics.DrawLine(p10, (float)((x1 - i * step) * w / (x1 - x2)), h - a - 5, (float)((x1 - i * step) * w / (x1 - x2)), h - a + 5);
+                    e.Graphics.DrawLine(p10, a - 5, (float)(h - (y1 - i * step) * h / (y1 - y2)), a + 5, (float)(h - (y1 - i * step) * h / (y1 - y2)));
+                    e.Graphics.DrawString((i * step).ToString(), font2, Brushes.Black, (float)((x1 - i * step) * w / (x1 - x2)), h - a + 5);
+                    e.Graphics.DrawString((i * step).ToString(), font2, Brushes.Black, a - 30, (float)(h - 5 - (y1 - i * step) * h / (y1 - y2)));
+                }
             }
-            
+
             //Стрелки абцисс и ординат
             p10.EndCap = LineCap.ArrowAnchor;
             e.Graphics.DrawLine(p10, 0, h - a, w - 10, h - a);
@@ -455,10 +455,10 @@ namespace DA
             e.Graphics.DrawString("x", font1, Brushes.Black, w - 20, h - a + 5);
             e.Graphics.DrawString("y", font1, Brushes.Black, a - 20, 1);
         }
-       
+
         //Все тествоые функции
         private float function(double x1, double x2, int f)
-        { 
+        {
             float funct = 0;
             if (f == 0)
                 funct = (float)(x1 * Math.Sin(Math.Sqrt(Math.Abs(x1))) + x2 * Math.Sin(Math.Sqrt(Math.Abs(x2))));
@@ -509,23 +509,23 @@ namespace DA
         //По шагам
         private void button3_Click(object sender, EventArgs e)
         {
-                obl = new double[2, 2];
+            obl = new double[2, 2];
 
-                obl[0, 0] = Convert.ToDouble(dataGridView1.Rows[0].Cells[1].Value);
-                obl[0, 1] = Convert.ToDouble(dataGridView1.Rows[0].Cells[2].Value);
-                obl[1, 0] = Convert.ToDouble(dataGridView1.Rows[1].Cells[1].Value);
-                obl[1, 1] = Convert.ToDouble(dataGridView1.Rows[1].Cells[2].Value);
+            obl[0, 0] = Convert.ToDouble(dataGridView1.Rows[0].Cells[1].Value);
+            obl[0, 1] = Convert.ToDouble(dataGridView1.Rows[0].Cells[2].Value);
+            obl[1, 0] = Convert.ToDouble(dataGridView1.Rows[1].Cells[1].Value);
+            obl[1, 1] = Convert.ToDouble(dataGridView1.Rows[1].Cells[2].Value);
 
-                population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
-                MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
+            population = Convert.ToInt32(dataGridView2.Rows[0].Cells[1].Value);
+            MaxIteration = Convert.ToInt32(dataGridView2.Rows[1].Cells[1].Value);
 
-                FormStepByStep form = new FormStepByStep(comboBox1.SelectedIndex, obl, population, MaxIteration, 0, exact)
-                {
-                    flines = flines,
-                    showobl = showobl,
-                    Ar = Ar
-                };
-                form.Show();
+            FormStepByStep form = new FormStepByStep(comboBox1.SelectedIndex, obl, population, MaxIteration, 0, exact)
+            {
+                flines = flines,
+                showobl = showobl,
+                Ar = Ar
+            };
+            form.Show();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -533,7 +533,7 @@ namespace DA
             Close();
         }
 
-        private void comboBox_SelectedIndexChanged(object sender, EventArgs e) 
+        private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (comboBox1.SelectedIndex != -1)
             {
@@ -580,7 +580,7 @@ namespace DA
 
                         foreach (Vector item in exactPoints)
                         {
-                            if ((Math.Abs(result.coords[0] - item[0]) < eps) && (Math.Abs(result.coords[1] - item[1]) < eps)) 
+                            if ((Math.Abs(result.coords[0] - item[0]) < eps) && (Math.Abs(result.coords[1] - item[1]) < eps))
                             {
                                 successCount++;
                                 break;
@@ -593,12 +593,12 @@ namespace DA
                     double deltaSum = 0;
                     for (int i = 0; i < 100; i++)
                         deltaSum += averFuncDeviation[i];
-                    
+
                     averDer = deltaSum / 100f;
 
                     averFuncDeviation.Sort();
                     minDeviation = averFuncDeviation[0];
-                    
+
                     double dispersion = 0;
                     for (int i = 0; i < 100; i++)
                         dispersion += Math.Pow(averFuncDeviation[i] - averDer, 2);
@@ -607,7 +607,7 @@ namespace DA
                     FileStream fs = new FileStream("protocol.txt", FileMode.Append, FileAccess.Write);
                     StreamWriter r = new StreamWriter(fs);
                     r.Write(String.Format(@"| {0, 4}          |      {1, 6}      |        {2, 4}         |        {3, 6}              |{4, 22:f6}                 |{5, 20:f6}              |{6, 20:f6}            |{7, 12}         |
-|---------------+------------------+---------------------+----------------------------+---------------------------------------+----------------------------------+--------------------------------+---------------------|", z + 1, population, MaxIteration,0, averDer, minDeviation, normalDerivation, successCount));
+|---------------+------------------+---------------------+----------------------------+---------------------------------------+----------------------------------+--------------------------------+---------------------|", z + 1, population, MaxIteration, 0, averDer, minDeviation, normalDerivation, successCount));
                     r.Write("\n");
                     r.Close();
                     fs.Close();
