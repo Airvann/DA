@@ -136,7 +136,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "500";
                 dataGridView1.Rows[1].Cells[1].Value = "-500";
                 dataGridView1.Rows[1].Cells[2].Value = "500";
-                exact = 837.9657;
+                exact = -837.9657;
                 exactPoints.Add(new Vector(420.9687, 420.9687));
 
                 Ar[0] = -200;
@@ -153,7 +153,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "2";
                 dataGridView1.Rows[1].Cells[1].Value = "-2";
                 dataGridView1.Rows[1].Cells[2].Value = "2";
-                exact = 4.253888;
+                exact = -4.253888;
                 exactPoints.Add(new Vector(-1.6288, -1.6288));
                 exactPoints.Add(new Vector(1.6288, 1.6288));
                 exactPoints.Add(new Vector(-1.6288, 1.6288));
@@ -173,7 +173,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "2";
                 dataGridView1.Rows[1].Cells[1].Value = "-2";
                 dataGridView1.Rows[1].Cells[2].Value = "2";
-                exact = 1;
+                exact = -1;
                 exactPoints.Add(new Vector(0.5, -0.866));
                 exactPoints.Add(new Vector(-0.5, 0.866));
                 exactPoints.Add(new Vector(0.5, 0.866));
@@ -195,7 +195,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "10";
                 dataGridView1.Rows[1].Cells[1].Value = "-10";
                 dataGridView1.Rows[1].Cells[2].Value = "10";
-                exact = 1;
+                exact = -1;
                 exactPoints.Add(new Vector(0, 0));
 
                 Ar[0] = 0.2F;
@@ -212,7 +212,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "5";
                 dataGridView1.Rows[1].Cells[1].Value = "-5";
                 dataGridView1.Rows[1].Cells[2].Value = "5";
-                exact = 20;
+                exact = -20;
                 exactPoints.Add(new Vector(0, 0));
 
                 Ar[0] = -20F;
@@ -229,7 +229,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "10";
                 dataGridView1.Rows[1].Cells[1].Value = "-10";
                 dataGridView1.Rows[1].Cells[2].Value = "10";
-                exact = 20;
+                exact = -20;
                 exactPoints.Add(new Vector(0, 0));
 
                 Ar[0] = 4F;
@@ -246,7 +246,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "5";
                 dataGridView1.Rows[1].Cells[1].Value = "-5";
                 dataGridView1.Rows[1].Cells[2].Value = "5";
-                exact = 14.060606;
+                exact = -14.060606;
                 exactPoints.Add(new Vector(-3.3157, -3.0725));
 
                 Ar[0] = 2F;
@@ -263,7 +263,7 @@ namespace DA
                 dataGridView1.Rows[0].Cells[2].Value = "5";
                 dataGridView1.Rows[1].Cells[1].Value = "-5";
                 dataGridView1.Rows[1].Cells[2].Value = "5";
-                exact = 1;
+                exact = -1;
                 exactPoints.Add(new Vector(1, -2));
 
                 Ar[0] = 0.1F;
