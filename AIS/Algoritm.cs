@@ -36,7 +36,7 @@ namespace DA
         //стремление к лучшему решению
         public double f;
 
-        //уклонение от лучшего решения
+        //уклонение от худшего решения
         public double e;
 
         //память о предыстории
@@ -133,7 +133,7 @@ namespace DA
         //Формирование новой стаи
         public void NewPackGeneration()
         {
-            R = ((ub - lb) / 4) + ((ub - lb) * (currentIteration / MaxCount) * 2);
+            R = ((ub - lb) / 4) + ((ub - lb) * (currentIteration / (0.5*MaxCount)));
 
             for (int i = 0; i < population; i++)
             {              
